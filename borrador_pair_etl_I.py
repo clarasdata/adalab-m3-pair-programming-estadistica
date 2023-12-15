@@ -5,8 +5,10 @@ import os
 import sys
 from src import pair_soporte_etl_I as sp
 
-#sys.path.append("../")
-
+#sys.path.append("../") -> mejor desconectado no tocar!!
+#os.getcwd()  -> para saber en que ruta estamos
+#os.chdir("ruta donde queremos trabajar")  -> para cambiar la ruta
+#pd.read_csv("productos.csv", on_bad_lines = 'skip') 
 #%%
 
 '''1 . Lectura de la Información:
@@ -22,9 +24,56 @@ from src import pair_soporte_etl_I as sp
 
 '''
 
+
+
 #%%
+ventas = sp.abrir_archivo("c1_ventas.csv") 
+clientes = sp.abrir_archivo("clientes.csv") 
+
+
+# %%
+#productos = sp.abrir_archivo("productos.csv") 
+# %%
+
+sp.nombres_columnas(ventas)
+sp.nombres_columnas(clientes)
+# %%
+clientes
+# %%
+
+pr=pd.read_csv("productos.csv", on_bad_lines = 'skip')
+
+
+# %%
+
+columnas_prov = ["1","2", "3", "4", "5" , "6", "7",  "8",  "9",  "10"]
+pr2=pd.read_csv("productos.csv", names = columnas_prov)
+# %%
+pr2 = pr2.fillna(' ')
 
 
 
-def abrir_archivo(nombre):
-    return pd.read_csv(nombre)
+# %%
+pr2['6'] = pr2['6'] + pr2['7'] + pr2['8'] + pr2['9'] + pr2['10'] 
+
+
+
+
+# %%
+pr2
+# %%
+pr2.drop(['7', '8', '9', '10'], axis = 1, inplace = True)
+# %%
+pr2
+# %%
+
+
+
+# Crear un diccionario de mapeo para los nuevos nombres de las columnas
+nuevos_nombres = {'1': 'id', '2': 'first_name', '3':'last_name', '6':'email', 	'7' :'gender', '8':	'city', '9':	'country'}
+
+# Utilizar el método rename con el diccionario de mapeo
+pr = pr.rename(columns=nuevos_nombres)
+# %%
+pr
+# %%
