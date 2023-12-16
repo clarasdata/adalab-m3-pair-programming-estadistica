@@ -30,50 +30,27 @@ from src import pair_soporte_etl_I as sp
 ventas = sp.abrir_archivo("c1_ventas.csv") 
 clientes = sp.abrir_archivo("clientes.csv") 
 
-
 # %%
-#productos = sp.abrir_archivo("productos.csv") 
+productos = sp.productos("productos.csv") 
 # %%
 
 sp.nombres_columnas(ventas)
 sp.nombres_columnas(clientes)
 # %%
-clientes
+clientes_sin_nulos = sp.nulos_clientes(clientes, clientes.columns.tolist())
 # %%
-
-pr=pd.read_csv("productos.csv", on_bad_lines = 'skip')
-
-
-# %%
-
-columnas_prov = ["1","2", "3", "4", "5" , "6", "7",  "8",  "9",  "10"]
-pr2=pd.read_csv("productos.csv", names = columnas_prov)
-# %%
-pr2 = pr2.fillna(' ')
-
-
+vc = sp.unir_tablas(ventas, clientes, "id_cliente")
+tabla = sp.unir_tablas(vc, productos, "id_producto")
 
 # %%
-pr2['6'] = pr2['6'] + pr2['7'] + pr2['8'] + pr2['9'] + pr2['10'] 
-
-
-
+lista_clientes_sin_compra = tabla.columns.tolist()[:5]
+lista_compra_sin_cliente =  tabla.columns.tolist()[5:13]
+lista_compra_sin_producto =  tabla.columns.tolist()[13:]
+#queremos sobreescrivir la tabla actual con los cambios:
+tabla = sp.nulos_tabla(tabla,lista_clientes_sin_compra, ("clientes sin registrar") )
+tabla = sp.nulos_tabla(tabla,lista_compra_sin_cliente, ("cliente sin compra este año") )
+tabla = sp.nulos_tabla(tabla,lista_compra_sin_producto , ("sin producto registrado"))
 
 # %%
-pr2
-# %%
-pr2.drop(['7', '8', '9', '10'], axis = 1, inplace = True)
-# %%
-pr2
-# %%
-
-
-
-# Crear un diccionario de mapeo para los nuevos nombres de las columnas
-nuevos_nombres = {'1': 'id', '2': 'first_name', '3':'last_name', '6':'email', 	'7' :'gender', '8':	'city', '9':	'country'}
-
-# Utilizar el método rename con el diccionario de mapeo
-pr = pr.rename(columns=nuevos_nombres)
-# %%
-pr
+tabla.drop(['id_x', 'id_y'], axis = 1, inplace=True)
 # %%
