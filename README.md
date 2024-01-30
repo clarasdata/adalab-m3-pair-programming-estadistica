@@ -1,1 +1,1 @@
-# da-promoF-modulo3-sprint2-pairprogramming-Silvia-Clara
+Ejercicios propuestos por ADALAB hechos en pair programming con Silvia Alsina
